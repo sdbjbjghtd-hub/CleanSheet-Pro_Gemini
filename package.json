@@ -1,0 +1,42 @@
+{
+  "name": "cleansheet-pro",
+  "version": "1.0.0",
+  "description": "A browser-based tool for cleaning and transforming spreadsheet data.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sdbjbjghtd-hub/CleanSheet-Pro_Gemini.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sdbjbjghtd-hub/CleanSheet-Pro_Gemini/issues"
+  },
+  "homepage": "https://github.com/sdbjbjghtd-hub/CleanSheet-Pro_Gemini#readme",
+  "devDependencies": {
+    "electron": "^39.2.2",
+    "electron-builder": "^26.0.12"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "build": {
+    "appId": "com.example.cleansheetpro",
+    "productName": "CleanSheet Pro",
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*"
+    ],
+    "mac": {
+      "target": "dmg"
+    }
+  }
+}
