@@ -24,6 +24,10 @@ jobs:
       - name: Build the application
         run: npm run build
 
+      - name: Get app version
+        id: get_version
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -42,6 +46,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/CleanSheet Pro-${{ github.ref_name }}.dmg
+          asset_path: ./dist/CleanSheet Pro-${{ steps.get_version.outputs.version }}.dmg
           asset_name: CleanSheet-Pro-${{ github.ref_name }}.dmg
           asset_content_type: application/octet-stream

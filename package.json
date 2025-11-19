@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder",
+    "dev": "vite",
+    "build": "vite build && electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,20 +21,26 @@
   },
   "homepage": "https://github.com/sdbjbjghtd-hub/CleanSheet-Pro_Gemini#readme",
   "devDependencies": {
+    "@vitejs/plugin-react": "^5.1.1",
+    "autoprefixer": "^10.4.22",
     "electron": "^39.2.2",
-    "electron-builder": "^26.0.12"
+    "electron-builder": "^26.0.12",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.17",
+    "vite": "^7.2.2"
   },
   "dependencies": {
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "xlsx": "^0.18.5"
   },
   "build": {
     "appId": "com.example.cleansheetpro",
     "productName": "CleanSheet Pro",
     "files": [
+      "dist/**/*",
       "main.js",
-      "preload.js",
-      "src/**/*"
+      "preload.js"
     ],
     "mac": {
       "target": "dmg"
