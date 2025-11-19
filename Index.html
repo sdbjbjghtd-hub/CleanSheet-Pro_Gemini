@@ -38,20 +38,39 @@
 
         /**
          * Simple logger wrapper for consistency and easier debugging.
+         * @namespace Logger
          */
         const Logger = {
+            /**
+             * Logs an informational message.
+             * @param {string} msg - The message to log.
+             * @param {*} [data] - Optional data to log with the message.
+             */
             info: (msg, data) => console.log(`[INFO] ${msg}`, data || ''),
+            /**
+             * Logs a warning message.
+             * @param {string} msg - The message to log.
+             * @param {*} [data] - Optional data to log with the message.
+             */
             warn: (msg, data) => console.warn(`[WARN] ${msg}`, data || ''),
+            /**
+             * Logs an error message.
+             * @param {string} msg - The message to log.
+             * @param {*} [err] - Optional error object to log.
+             */
             error: (msg, err) => console.error(`[ERROR] ${msg}`, err || ''),
         };
 
         /**
          * DataService handles all heavy lifting: parsing, logic processing, and exporting.
+         * @namespace DataService
          */
         const DataService = {
             /**
              * Reads a raw File object (CSV/Excel) and returns a structured JSON object.
              * Uses SheetJS (XLSX) library.
+             * @param {File} file - The file to parse.
+             * @returns {Promise<Object>} A promise that resolves with an object containing headers, rows, and originalFileName.
              */
             parseExcel: (file) => {
                 return new Promise((resolve, reject) => {
@@ -84,10 +103,11 @@
             },
 
             /**
-             * core logic for comparing a cell value against a rule.
-             * @param {any} cellValue - The value in the spreadsheet cell
+             * Core logic for comparing a cell value against a rule.
+             * @param {*} cellValue - The value in the spreadsheet cell.
              * @param {string} operator - 'equals', 'contains', 'greater_than', etc.
-             * @param {string} ruleValue - The user-defined value to compare against
+             * @param {string} ruleValue - The user-defined value to compare against.
+             * @returns {boolean} - True if the condition is met, false otherwise.
              */
             checkCondition: (cellValue, operator, ruleValue) => {
                 if (cellValue === undefined || cellValue === null) cellValue = "";
@@ -125,6 +145,9 @@
             /**
              * Iterates through rows and applies the user-defined rules (Filter/Transform).
              * Returns a NEW array of rows (does not mutate original).
+             * @param {Object} data - The file data object with headers and rows.
+             * @param {Array<Object>} rules - An array of rule objects to apply.
+             * @returns {Array<Array<*>>} - A new array of rows after applying the rules.
              */
             applyRules: (data, rules) => {
                 if (!data) return [];
@@ -170,6 +193,9 @@
 
             /**
              * Generates simple frequency analysis for the "Visualize" tab.
+             * @param {Array<Array<*>>} rows - The rows of data to analyze.
+             * @param {number} colIndex - The index of the column to analyze.
+             * @returns {{sorted: Array<[string, number]>, maxVal: number}} - An object containing the sorted frequency counts and the maximum value.
              */
             calculateColumnStats: (rows, colIndex) => {
                 const counts = {};
@@ -185,6 +211,10 @@
 
             /**
              * Browser-side file generation and download trigger.
+             * @param {string} type - The type of file to export ('csv', 'xlsx', 'json', 'sql').
+             * @param {Array<string>} headers - The headers for the data.
+             * @param {Array<Array<*>>} data - The data to export.
+             * @param {string} fileName - The name of the file to export.
              */
             exportFile: (type, headers, data, fileName) => {
                 Logger.info(`Exporting as ${type}`, { fileName });
@@ -220,28 +250,54 @@
         // 2. ICONS
         // Description: SVG components for UI
         // ==========================================
+        /**
+         * A collection of SVG icon components.
+         * @namespace Icons
+         */
         const Icons = {
+            /** @returns {JSX.Element} */
             FileSpreadsheet: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M8 13h2"/><path d="M8 17h2"/><path d="M14 13h2"/><path d="M14 17h2"/></svg>,
+            /** @returns {JSX.Element} */
             Upload: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>,
+            /** @returns {JSX.Element} */
             RefreshCw: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>,
+            /** @returns {JSX.Element} */
             Download: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>,
+            /** @returns {JSX.Element} */
             Filter: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>,
+            /** @returns {JSX.Element} */
             Plus: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>,
+            /** @returns {JSX.Element} */
             X: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>,
+            /** @returns {JSX.Element} */
             AlertCircle: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>,
+            /** @returns {JSX.Element} */
             Save: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>,
+            /** @returns {JSX.Element} */
             Scissors: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>,
+            /** @returns {JSX.Element} */
             Type: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>,
+            /** @returns {JSX.Element} */
             Search: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
+            /** @returns {JSX.Element} */
             Copy: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>,
+            /** @returns {JSX.Element} */
             BarChart2: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
+            /** @returns {JSX.Element} */
             Table: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><line x1="3" x2="21" y1="9" y2="9"/><line x1="3" x2="21" y1="15" y2="15"/><line x1="12" x2="12" y1="3" y2="21"/></svg>,
+            /** @returns {JSX.Element} */
             Database: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>,
+            /** @returns {JSX.Element} */
             FileJson: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M10 12a1 1 0 0 0-1 1v1a1 1 0 0 1-1 1 1 1 0 0 1 1 1v1a1 1 0 0 0 1 1"/></svg>,
+            /** @returns {JSX.Element} */
             ArrowRight: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>,
+            /** @returns {JSX.Element} */
             ListFilter: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>,
+            /** @returns {JSX.Element} */
             GitCompare: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/></svg>,
+            /** @returns {JSX.Element} */
             ArrowLeftRight: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg>,
+            /** @returns {JSX.Element} */
             CheckCircle2: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
         };
 
@@ -251,8 +307,21 @@
         // ==========================================
 
         /**
-         * Hooks for managing the Main File (Cleaning/Visualizing tabs).
+         * A custom hook for managing the main file processing logic.
          * Handles parsing, rule application state, and local storage persistence.
+         * @returns {{
+         *  fileData: object | null,
+         *  setFileData: Function,
+         *  rules: Array<object>,
+         *  setRules: Function,
+         *  loading: boolean,
+         *  processedRows: Array<Array<*>>,
+         *  processFile: Function,
+         *  updateRule: Function,
+         *  addRule: Function,
+         *  deleteRule: Function,
+         *  mutateData: Function
+         * }}
          */
         const useFileProcessor = () => {
             const [fileData, setFileData] = useState(null); // Raw file content
@@ -309,8 +378,17 @@
         };
 
         /**
-         * Hooks for managing the Reconciliation (Comparison) Tab.
+         * A custom hook for managing the reconciliation (comparison) logic.
          * Handles two file inputs (FileA, FileB) and the comparison logic.
+         * @returns {{
+         *  state: object,
+         *  setState: Function,
+         *  activeSubTab: string,
+         *  setActiveSubTab: Function,
+         *  handleUpload: Function,
+         *  run: Function,
+         *  reset: Function
+         * }}
          */
         const useReconciliation = () => {
             const [state, setState] = useState({ fileA: null, fileB: null, keyA: '', keyB: '', results: null });
@@ -365,6 +443,17 @@
         // Description: Functional React Components
         // ==========================================
 
+        /**
+         * The main header component for the application.
+         * @param {{
+         *  fileData: object | null,
+         *  activeTab: string,
+         *  setActiveTab: Function,
+         *  onReset: Function,
+         *  onExport: Function
+         * }} props - The component props.
+         * @returns {JSX.Element}
+         */
         const Header = ({ fileData, activeTab, setActiveTab, onReset, onExport }) => (
             <header className="bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between shrink-0 z-20">
                 <div className="flex items-center gap-3">
@@ -402,6 +491,8 @@
 
         /**
          * Drag-and-drop upload area shown when no file is loaded.
+         * @param {{onUpload: Function, loading: boolean}} props - The component props.
+         * @returns {JSX.Element}
          */
         const DropZone = ({ onUpload, loading }) => (
             <div className="flex-1 flex flex-col items-center justify-center p-4">
@@ -427,6 +518,18 @@
 
         /**
          * Left-hand sidebar containing Rules list and Saved Recipes.
+         * @param {{
+         *  rules: Array<object>,
+         *  headers: Array<string>,
+         *  updateRule: Function,
+         *  deleteRule: Function,
+         *  addRule: Function,
+         *  savedRecipes: Array<object>,
+         *  onSaveClick: Function,
+         *  onLoadRecipe: Function,
+         *  onDeleteRecipe: Function
+         * }} props - The component props.
+         * @returns {JSX.Element}
          */
         const Sidebar = ({ rules, headers, updateRule, deleteRule, addRule, savedRecipes, onSaveClick, onLoadRecipe, onDeleteRecipe }) => (
             <aside className="w-96 bg-white border-r border-slate-200 flex flex-col shrink-0 overflow-hidden">
@@ -460,6 +563,14 @@
 
         /**
          * Individual Card for defining a Logic Rule (IF X THEN Y).
+         * @param {{
+         * rule: object,
+         * index: number,
+         * headers: Array<string>,
+         * updateRule: Function,
+         * deleteRule: Function
+         * }} props - The component props.
+         * @returns {JSX.Element}
          */
         const RuleCard = ({ rule, index, headers, updateRule, deleteRule }) => (
             <div className="bg-white border border-slate-200 rounded-lg shadow-sm relative group overflow-hidden">
@@ -512,6 +623,12 @@
 
         /**
          * Main Data Table view. Shows headers, rows, and the toolbar for mutations.
+         * @param {{
+         * fileData: object,
+         * processedRows: Array<Array<*>>,
+         * onToolClick: Function
+         * }} props - The component props.
+         * @returns {JSX.Element}
          */
         const DataView = ({ fileData, processedRows, onToolClick }) => {
             const total = fileData.rows.length;
@@ -570,6 +687,11 @@
 
         /**
          * Visualization View. Renders simple bar charts for column value frequency.
+         * @param {{
+         * fileData: object,
+         * processedRows: Array<Array<*>>
+         * }} props - The component props.
+         * @returns {JSX.Element}
          */
         const StatsView = ({ fileData, processedRows }) => (
             <div className="flex-1 overflow-auto p-8 bg-slate-50">
@@ -597,6 +719,8 @@
 
         /**
          * Reconciliation View. Handles two file upload zones and comparison results table.
+         * @param {{rec: object, onExport: Function}} props - The component props.
+         * @returns {JSX.Element}
          */
         const ReconcileView = ({ rec, onExport }) => (
             <div className="flex-1 overflow-auto p-8 bg-slate-50 flex flex-col">
@@ -672,6 +796,15 @@
 
         /**
          * Modal for Tool Actions (Find/Replace, Split, Case, Dedupe).
+         * @param {{
+         * mode: string,
+         * config: object,
+         * setConfig: Function,
+         * onClose: Function,
+         * onExecute: Function,
+         * headers: Array<string>
+         * }} props - The component props.
+         * @returns {JSX.Element}
          */
         const TransformModal = ({ mode, config, setConfig, onClose, onExecute, headers }) => (
             <div className="absolute top-0 left-0 w-full h-full bg-white/90 z-50 flex items-start justify-center pt-20 backdrop-blur-sm">
@@ -724,6 +857,16 @@
             </div>
         );
 
+        /**
+         * A modal for saving the current set of rules as a recipe.
+         * @param {{
+         * name: string,
+         * setName: Function,
+         * onClose: Function,
+         * onSave: Function
+         * }} props - The component props.
+         * @returns {JSX.Element}
+         */
         const SaveRecipeModal = ({ name, setName, onClose, onSave }) => (
             <div className="absolute top-0 left-0 w-full h-full bg-black/20 z-50 flex items-center justify-center backdrop-blur-sm">
                 <div className="bg-white rounded-xl shadow-xl p-6 w-80">
@@ -742,6 +885,10 @@
         // Description: Orchestration Layer
         // ==========================================
 
+        /**
+         * The main application component.
+         * @returns {JSX.Element}
+         */
         const App = () => {
             // --- State Initialization ---
             const { fileData, setFileData, rules, setRules, loading, processedRows, processFile, updateRule, addRule, deleteRule, mutateData } = useFileProcessor();
